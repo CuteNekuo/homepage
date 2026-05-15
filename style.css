@@ -746,6 +746,27 @@ img { display: block; max-width: 100%; }
   .voice__grid { grid-template-columns: 1fr; }
 }
 
+/* ===== Edit Button ===== */
+.edit-btn {
+  position: fixed;
+  bottom: 88px;
+  right: 20px;
+  z-index: 95;
+  background: var(--dark);
+  color: var(--white);
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: all var(--transition);
+}
+.edit-btn:hover { background: #333; opacity: 1; transform: translateY(-2px); }
+
+@media (min-width: 769px) {
+  .edit-btn { bottom: 24px; }
+}
+
 /* ===== Animations ===== */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }

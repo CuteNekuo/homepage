@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サイト編集</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #e63000;
+      --dark: #1a1a1a;
+      --gray: #f0f0f0;
+      --border: #ddd;
+      --font: 'Noto Sans JP', sans-serif;
+    }
+    body { font-family: var(--font); background: #f7f7f7; color: var(--dark); }
+
+    .top-bar {
+      background: var(--dark);
+      color: #fff;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .top-bar__title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .top-bar__actions { display: flex; gap: 10px; }
+
+    .btn {
+      padding: 9px 22px;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .btn--save { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn--save:hover { background: #b82400; }
+    .btn--preview { background: transparent; color: #fff; border-color: rgba(255,255,255,0.4); }
+    .btn--preview:hover { background: rgba(255,255,255,0.1); }
+    .btn--reset { background: transparent; color: rgba(255,255,255,0.5); border-color: transparent; font-size: 0.8rem; }
+    .btn--reset:hover { color: #fff; }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      background: #fff;
+      border-bottom: 2px solid var(--border);
+      padding: 0 24px;
+      overflow-x: auto;
+    }
+    .tab {
+      padding: 14px 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #888;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab:hover { color: var(--dark); }
+
+    .content { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--dark);
+      margin: 32px 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    .field {
+      margin-bottom: 18px;
+    }
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .field input, .field textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      color: var(--dark);
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+    .field input:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .field textarea { resize: vertical; min-height: 72px; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card-block {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-block__label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 520px) {
+      .field-row { grid-template-columns: 1fr; }
+      .top-bar__actions .btn--reset { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar__title">✏️ サイト編集</div>
+  <div class="top-bar__actions">
+    <button class="btn btn--reset" id="resetBtn">リセット</button>
+    <a href="index.html" target="_blank" class="btn btn--preview">プレビュー</a>
+    <button class="btn btn--save" id="saveBtn">保存する</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="basic">基本情報</div>
+  <div class="tab" data-tab="hero">ヒーロー</div>
+  <div class="tab" data-tab="price">買取実績</div>
+  <div class="tab" data-tab="review">お客様の声</div>
+</div>
+
+<div class="content">
+
+  <!-- 基本情報 -->
+  <div class="panel active" id="panel-basic">
+    <p class="section-title">会社情報</p>
+    <div class="field">
+      <label>会社名・サービス名</label>
+      <input type="text" data-key="companyName" placeholder="バイク買取センター">
+    </div>
+    <div class="field">
+      <label>電話番号</label>
+      <input type="tel" data-key="phone" placeholder="0120-000-000">
+    </div>
+  </div>
+
+  <!-- ヒーロー -->
+  <div class="panel" id="panel-hero">
+    <p class="section-title">バッジ・キャッチコピー</p>
+    <div class="field">
+      <label>バッジテキスト（上部の小さな帯）</label>
+      <input type="text" data-key="heroBadge" placeholder="全国対応 ／ 出張査定無料">
+    </div>
+    <div class="field">
+      <label>タイトル 1行目</label>
+      <input type="text" data-key="heroLine1" placeholder="あなたのバイクを">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>強調ワード（オレンジ色）</label>
+        <input type="text" data-key="heroHighlight" placeholder="最高値">
+      </div>
+      <div class="field">
+        <label>タイトル 強調後のテキスト</label>
+        <input type="text" data-key="heroLine2" placeholder="で買取します">
+      </div>
+    </div>
+    <div class="field">
+      <label>サブテキスト</label>
+      <textarea data-key="heroSub" placeholder="国産・外車・不動車・事故車、どんなバイクでもOK！"></textarea>
+    </div>
+
+    <p class="section-title">実績数値（3つのスタッツ）</p>
+    <div class="card-block">
+      <div class="card-block__label">スタッツ 1</div>
+      <div class="field-row">
+        <div class="field"><label>数値</label><input type="text" data-key="stat1Value" placeholder="15,000台"></div>
+        <div class="field"><label>ラベル</label><input type="text" data-key="stat1Label" placeholder="累計買取実績"></div>
+      </div>
+    </div>
+    <div class="card-block">
+      <div class="card-block__label">スタッツ 2</div>
+      <div class="field-row">
+        <div class="field"><label>数値</label><input type="text" data-key="stat2Value" placeholder="4.9 / 5.0"></div>
+        <div class="field"><label>ラベル</label><input type="text" data-key="stat2Label" placeholder="顧客満足度"></div>
+      </div>
+    </div>
+    <div class="card-block">
+      <div class="card-block__label">スタッツ 3</div>
+      <div class="field-row">
+        <div class="field"><label>数値</label><input type="text" data-key="stat3Value" placeholder="最短30分"></div>
+        <div class="field"><label>ラベル</label><input type="text" data-key="stat3Label" placeholder="で査定完了"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 買取実績 -->
+  <div class="panel" id="panel-price">
+    <p class="section-title">買取実績カード（6件）</p>
+    ${[1,2,3,4,5,6].map(i => `
+    <div class="card-block">
+      <div class="card-block__label">実績 ${i}</div>
+      <div class="field-row">
+        <div class="field"><label>メーカー</label><input type="text" data-key="price${i}Maker"></div>
+        <div class="field"><label>車種名</label><input type="text" data-key="price${i}Name"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>詳細（年式・走行距離など）</label><input type="text" data-key="price${i}Detail"></div>
+        <div class="field"><label>買取金額（円）</label><input type="text" data-key="price${i}Amount"></div>
+      </div>
+    </div>`).join('')}
+  </div>
+
+  <!-- お客様の声 -->
+  <div class="panel" id="panel-review">
+    <p class="section-title">お客様の声（3件）</p>
+    ${[1,2,3].map(i => `
+    <div class="card-block">
+      <div class="card-block__label">レビュー ${i}</div>
+      <div class="field">
+        <label>レビュー文</label>
+        <textarea data-key="review${i}Text"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>お客様名</label><input type="text" data-key="review${i}Name"></div>
+        <div class="field"><label>バイク車種</label><input type="text" data-key="review${i}Bike"></div>
+      </div>
+    </div>`).join('')}
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULTS = {
+  companyName: 'バイク買取センター',
+  phone: '0120-000-000',
+  heroBadge: '全国対応 ／ 出張査定無料',
+  heroLine1: 'あなたのバイクを',
+  heroHighlight: '最高値',
+  heroLine2: 'で買取します',
+  heroSub: '国産・外車・不動車・事故車、どんなバイクでもOK！即日査定・即日現金払い可能。',
+  stat1Value: '15,000台', stat1Label: '累計買取実績',
+  stat2Value: '4.9 / 5.0', stat2Label: '顧客満足度',
+  stat3Value: '最短30分', stat3Label: 'で査定完了',
+  price1Maker: 'Honda',    price1Name: 'CB400SF',       price1Detail: '2020年式 / 走行8,000km',  price1Amount: '580,000',
+  price2Maker: 'Yamaha',   price2Name: 'MT-09',          price2Detail: '2022年式 / 走行5,200km',  price2Amount: '920,000',
+  price3Maker: 'Kawasaki', price3Name: 'Z900RS',         price3Detail: '2021年式 / 走行12,000km', price3Amount: '850,000',
+  price4Maker: 'Suzuki',   price4Name: 'GSX-R1000',      price4Detail: '2019年式 / 走行18,000km', price4Amount: '750,000',
+  price5Maker: 'BMW',      price5Name: 'R1250GS',        price5Detail: '2021年式 / 走行9,500km',  price5Amount: '1,450,000',
+  price6Maker: 'Honda',    price6Name: 'スーパーカブ110', price6Detail: '2018年式 / 走行22,000km', price6Amount: '95,000',
+  review1Text: '「他社より10万円以上高い査定額にびっくり！スタッフの方も感じよく、安心して任せられました。」',
+  review1Name: 'T.K さん（40代・男性）', review1Bike: 'Honda CBR600RR',
+  review2Text: '「不動車だったので売れないと思っていましたが、快く買い取ってもらえました。引き取りも無料で助かりました！」',
+  review2Name: 'M.S さん（30代・女性）', review2Bike: 'Yamaha YZF-R3（不動車）',
+  review3Text: '「当日に査定・現金受け取りまで完了。書類手続きも全部やってくれて、本当に楽でした。またお願いしたいです。」',
+  review3Name: 'R.Y さん（50代・男性）', review3Bike: 'Kawasaki Ninja H2',
+};
+
+function loadConfig() {
+  try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem('bikeConfig') || '{}') }; }
+  catch { return { ...DEFAULTS }; }
+}
+
+function fillForm(config) {
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.dataset.key;
+    if (config[key] !== undefined) el.value = config[key];
+    else if (DEFAULTS[key] !== undefined) el.placeholder = DEFAULTS[key];
+  });
+}
+
+function readForm() {
+  const data = {};
+  document.querySelectorAll('[data-key]').forEach(el => {
+    if (el.value.trim()) data[el.dataset.key] = el.value.trim();
+  });
+  return data;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// タブ切り替え
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// 保存
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const data = readForm();
+  localStorage.setItem('bikeConfig', JSON.stringify(data));
+  showToast('✅ 保存しました！');
+});
+
+// リセット
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('すべてデフォルトに戻しますか？')) return;
+  localStorage.removeItem('bikeConfig');
+  fillForm(DEFAULTS);
+  showToast('🔄 リセットしました');
+});
+
+fillForm(loadConfig());
+</script>
+</body>
+</html>

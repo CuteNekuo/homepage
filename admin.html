@@ -11,141 +11,226 @@
     :root {
       --primary: #e63000;
       --dark: #1a1a1a;
-      --gray: #f0f0f0;
-      --border: #ddd;
+      --sidebar-w: 380px;
+      --topbar-h: 56px;
       --font: 'Noto Sans JP', sans-serif;
     }
-    body { font-family: var(--font); background: #f7f7f7; color: var(--dark); }
+    body { font-family: var(--font); background: #f0f0f0; color: var(--dark); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 
-    .top-bar {
-      background: var(--dark);
-      color: #fff;
-      padding: 0 24px;
-      height: 60px;
+    /* ── Top bar ── */
+    .topbar {
+      height: var(--topbar-h);
+      background: #111;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      padding: 0 16px;
+      flex-shrink: 0;
+      gap: 10px;
     }
-    .top-bar__title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .top-bar__actions { display: flex; gap: 10px; }
+    .topbar__left { display: flex; align-items: center; gap: 12px; }
+    .topbar__title { color: #fff; font-size: 0.92rem; font-weight: 700; white-space: nowrap; }
+    .topbar__right { display: flex; align-items: center; gap: 8px; }
 
     .btn {
-      padding: 9px 22px;
+      padding: 8px 18px;
       border-radius: 50px;
       font-family: var(--font);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
       border: 2px solid transparent;
       transition: all 0.2s;
+      white-space: nowrap;
     }
-    .btn--save { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .btn--save:hover { background: #b82400; }
-    .btn--preview { background: transparent; color: #fff; border-color: rgba(255,255,255,0.4); }
-    .btn--preview:hover { background: rgba(255,255,255,0.1); }
-    .btn--reset { background: transparent; color: rgba(255,255,255,0.5); border-color: transparent; font-size: 0.8rem; }
-    .btn--reset:hover { color: #fff; }
+    .btn-save { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-save:hover { background: #b82400; }
+    .btn-ghost { background: transparent; color: rgba(255,255,255,0.65); border-color: rgba(255,255,255,0.25); }
+    .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
+
+    /* ── Workspace ── */
+    .workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #ddd;
+      overflow: hidden;
+    }
 
     .tabs {
       display: flex;
-      gap: 0;
-      background: #fff;
-      border-bottom: 2px solid var(--border);
-      padding: 0 24px;
+      border-bottom: 2px solid #eee;
+      flex-shrink: 0;
       overflow-x: auto;
     }
     .tab {
-      padding: 14px 20px;
-      font-size: 0.88rem;
+      flex: 1;
+      padding: 12px 6px;
+      font-size: 0.78rem;
       font-weight: 700;
-      color: #888;
+      color: #999;
+      text-align: center;
       cursor: pointer;
       border-bottom: 3px solid transparent;
       margin-bottom: -2px;
-      white-space: nowrap;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .tab:hover { color: var(--dark); }
+    .tab:hover { color: #333; }
 
-    .content { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+    .panels { flex: 1; overflow-y: auto; padding: 20px 18px 40px; }
 
     .panel { display: none; }
     .panel.active { display: block; }
 
-    .section-title {
-      font-size: 1rem;
+    .sec-title {
+      font-size: 0.78rem;
       font-weight: 900;
-      color: var(--dark);
-      margin: 32px 0 16px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--border);
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin: 24px 0 12px;
     }
-    .section-title:first-child { margin-top: 0; }
+    .sec-title:first-child { margin-top: 0; }
 
-    .field {
-      margin-bottom: 18px;
-    }
-    .field label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #555;
-      margin-bottom: 6px;
-    }
-    .field input, .field textarea {
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.78rem; font-weight: 700; color: #666; margin-bottom: 5px; }
+    .field input, .field textarea, .field select {
       width: 100%;
-      padding: 11px 14px;
-      border: 2px solid var(--border);
-      border-radius: 8px;
+      padding: 9px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 7px;
       font-family: var(--font);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--dark);
-      transition: border-color 0.2s;
       background: #fff;
+      transition: border-color 0.2s;
     }
-    .field input:focus, .field textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .field textarea { resize: vertical; min-height: 72px; }
+    .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--primary); }
+    .field textarea { resize: vertical; min-height: 68px; }
 
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .card-block {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 16px;
+      background: #f8f8f8;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
-    .card-block__label {
-      font-size: 0.78rem;
-      font-weight: 700;
+    .card-block__num {
+      font-size: 0.72rem;
+      font-weight: 900;
       color: var(--primary);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 14px;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    /* ── Design tab ── */
+    .color-row { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+    .color-row label { font-size: 0.78rem; font-weight: 700; color: #666; min-width: 100px; }
+    .color-row input[type="color"] {
+      width: 44px; height: 36px; border: 1.5px solid #ddd; border-radius: 7px;
+      padding: 2px; cursor: pointer; background: #fff;
+    }
+    .color-preview { flex: 1; height: 36px; border-radius: 7px; border: 1.5px solid #ddd; }
+
+    .theme-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+    .theme-btn {
+      height: 44px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .theme-btn.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--dark); }
+    .theme-btn span { display: none; }
+
+    .layout-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .layout-opt {
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #888;
+      transition: all 0.2s;
+    }
+    .layout-opt.selected { border-color: var(--primary); color: var(--primary); background: #fff5f3; }
+    .layout-opt .icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+
+    /* ── Preview pane ── */
+    .preview-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #e0e0e0;
+    }
+    .preview-bar {
+      background: #222;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .preview-bar__dot { width: 10px; height: 10px; border-radius: 50%; }
+    .preview-bar__label {
+      margin-left: auto;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .preview-frame {
+      flex: 1;
+      border: none;
+      background: #fff;
+    }
+
+    /* ── Mobile ── */
+    .mobile-preview-toggle {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 50;
+      background: var(--dark);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border: none;
+      font-family: var(--font);
     }
 
     .toast {
       position: fixed;
-      bottom: 24px;
+      bottom: 20px;
       left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #1a1a1a;
+      transform: translateX(-50%) translateY(16px);
+      background: #111;
       color: #fff;
-      padding: 12px 28px;
+      padding: 10px 24px;
       border-radius: 50px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       opacity: 0;
       transition: all 0.3s;
@@ -154,131 +239,167 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    @media (max-width: 520px) {
-      .field-row { grid-template-columns: 1fr; }
-      .top-bar__actions .btn--reset { display: none; }
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 100vw; }
+      .preview-pane { display: none; }
+      .preview-pane.show-mobile { display: flex; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 40; }
+      .mobile-preview-toggle { display: flex; }
     }
   </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <div class="top-bar__title">✏️ サイト編集</div>
-  <div class="top-bar__actions">
-    <button class="btn btn--reset" id="resetBtn">リセット</button>
-    <a href="index.html" target="_blank" class="btn btn--preview">プレビュー</a>
-    <button class="btn btn--save" id="saveBtn">保存する</button>
+<div class="topbar">
+  <div class="topbar__left">
+    <span class="topbar__title">✏️ サイト編集</span>
+  </div>
+  <div class="topbar__right">
+    <button class="btn btn-ghost" id="resetBtn">リセット</button>
+    <button class="btn btn-save" id="saveBtn">💾 保存する</button>
   </div>
 </div>
 
-<div class="tabs">
-  <div class="tab active" data-tab="basic">基本情報</div>
-  <div class="tab" data-tab="hero">ヒーロー</div>
-  <div class="tab" data-tab="price">買取実績</div>
-  <div class="tab" data-tab="review">お客様の声</div>
+<div class="workspace">
+  <!-- サイドバー -->
+  <div class="sidebar">
+    <div class="tabs">
+      <div class="tab active" data-tab="basic">基本</div>
+      <div class="tab" data-tab="hero">ヒーロー</div>
+      <div class="tab" data-tab="price">買取実績</div>
+      <div class="tab" data-tab="review">口コミ</div>
+      <div class="tab" data-tab="design">デザイン</div>
+    </div>
+
+    <div class="panels">
+
+      <!-- 基本情報 -->
+      <div class="panel active" id="panel-basic">
+        <div class="sec-title">会社情報</div>
+        <div class="field"><label>会社名・サービス名</label><input data-key="companyName" placeholder="バイク買取センター"></div>
+        <div class="field"><label>電話番号</label><input data-key="phone" placeholder="0120-000-000" type="tel"></div>
+      </div>
+
+      <!-- ヒーロー -->
+      <div class="panel" id="panel-hero">
+        <div class="sec-title">バッジ・キャッチコピー</div>
+        <div class="field"><label>バッジ（上部の帯テキスト）</label><input data-key="heroBadge" placeholder="全国対応 ／ 出張査定無料"></div>
+        <div class="field"><label>タイトル 1行目</label><input data-key="heroLine1" placeholder="あなたのバイクを"></div>
+        <div class="row2">
+          <div class="field"><label>強調ワード（色付き）</label><input data-key="heroHighlight" placeholder="最高値"></div>
+          <div class="field"><label>強調ワードの後</label><input data-key="heroLine2" placeholder="で買取します"></div>
+        </div>
+        <div class="field"><label>サブテキスト</label><textarea data-key="heroSub" placeholder="国産・外車・不動車・事故車、どんなバイクでもOK！"></textarea></div>
+
+        <div class="sec-title">実績数値</div>
+        <div class="card-block">
+          <div class="card-block__num">スタッツ 1</div>
+          <div class="row2">
+            <div class="field"><label>数値</label><input data-key="stat1Value" placeholder="15,000台"></div>
+            <div class="field"><label>ラベル</label><input data-key="stat1Label" placeholder="累計買取実績"></div>
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block__num">スタッツ 2</div>
+          <div class="row2">
+            <div class="field"><label>数値</label><input data-key="stat2Value" placeholder="4.9 / 5.0"></div>
+            <div class="field"><label>ラベル</label><input data-key="stat2Label" placeholder="顧客満足度"></div>
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="card-block__num">スタッツ 3</div>
+          <div class="row2">
+            <div class="field"><label>数値</label><input data-key="stat3Value" placeholder="最短30分"></div>
+            <div class="field"><label>ラベル</label><input data-key="stat3Label" placeholder="で査定完了"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 買取実績 -->
+      <div class="panel" id="panel-price">
+        <div class="sec-title">買取実績カード（6件）</div>
+        ${[1,2,3,4,5,6].map(i => `
+        <div class="card-block">
+          <div class="card-block__num">実績 ${i}</div>
+          <div class="row2">
+            <div class="field"><label>メーカー</label><input data-key="price${i}Maker"></div>
+            <div class="field"><label>車種名</label><input data-key="price${i}Name"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>詳細</label><input data-key="price${i}Detail" placeholder="年式・走行距離など"></div>
+            <div class="field"><label>買取金額（円）</label><input data-key="price${i}Amount"></div>
+          </div>
+        </div>`).join('')}
+      </div>
+
+      <!-- 口コミ -->
+      <div class="panel" id="panel-review">
+        <div class="sec-title">お客様の声（3件）</div>
+        ${[1,2,3].map(i => `
+        <div class="card-block">
+          <div class="card-block__num">レビュー ${i}</div>
+          <div class="field"><label>レビュー文</label><textarea data-key="review${i}Text"></textarea></div>
+          <div class="row2">
+            <div class="field"><label>お客様名</label><input data-key="review${i}Name"></div>
+            <div class="field"><label>バイク車種</label><input data-key="review${i}Bike"></div>
+          </div>
+        </div>`).join('')}
+      </div>
+
+      <!-- デザイン -->
+      <div class="panel" id="panel-design">
+        <div class="sec-title">テーマカラー</div>
+        <div class="theme-presets" id="themePresets">
+          <button class="theme-btn selected" data-theme="red" style="background:linear-gradient(135deg,#e63000,#ff4d1f)" title="レッド"></button>
+          <button class="theme-btn" data-theme="blue" style="background:linear-gradient(135deg,#1a6fe6,#3d9bff)" title="ブルー"></button>
+          <button class="theme-btn" data-theme="green" style="background:linear-gradient(135deg,#0d7a4e,#1db973)" title="グリーン"></button>
+          <button class="theme-btn" data-theme="purple" style="background:linear-gradient(135deg,#6b21e6,#a855f7)" title="パープル"></button>
+        </div>
+
+        <div class="sec-title">カスタムカラー</div>
+        <div class="color-row">
+          <label>メインカラー</label>
+          <input type="color" data-key="colorPrimary" value="#e63000">
+          <div class="color-preview" id="previewPrimary" style="background:#e63000"></div>
+        </div>
+        <div class="color-row">
+          <label>アクセントカラー</label>
+          <input type="color" data-key="colorAccent" value="#ff9900">
+          <div class="color-preview" id="previewAccent" style="background:#ff9900"></div>
+        </div>
+
+        <div class="sec-title">ヒーロー背景</div>
+        <div class="layout-options" id="heroBgOptions">
+          <div class="layout-opt selected" data-bg="dark">
+            <span class="icon">🌑</span>ダーク
+          </div>
+          <div class="layout-opt" data-bg="navy">
+            <span class="icon">🌊</span>ネイビー
+          </div>
+          <div class="layout-opt" data-bg="forest">
+            <span class="icon">🌲</span>フォレスト
+          </div>
+          <div class="layout-opt" data-bg="midnight">
+            <span class="icon">🌌</span>ミッドナイト
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- プレビュー -->
+  <div class="preview-pane" id="previewPane">
+    <div class="preview-bar">
+      <div class="preview-bar__dot" style="background:#ff5f57"></div>
+      <div class="preview-bar__dot" style="background:#febc2e"></div>
+      <div class="preview-bar__dot" style="background:#28c840"></div>
+      <span class="preview-bar__label">リアルタイムプレビュー</span>
+    </div>
+    <iframe class="preview-frame" id="previewFrame" src="index.html"></iframe>
+  </div>
 </div>
 
-<div class="content">
-
-  <!-- 基本情報 -->
-  <div class="panel active" id="panel-basic">
-    <p class="section-title">会社情報</p>
-    <div class="field">
-      <label>会社名・サービス名</label>
-      <input type="text" data-key="companyName" placeholder="バイク買取センター">
-    </div>
-    <div class="field">
-      <label>電話番号</label>
-      <input type="tel" data-key="phone" placeholder="0120-000-000">
-    </div>
-  </div>
-
-  <!-- ヒーロー -->
-  <div class="panel" id="panel-hero">
-    <p class="section-title">バッジ・キャッチコピー</p>
-    <div class="field">
-      <label>バッジテキスト（上部の小さな帯）</label>
-      <input type="text" data-key="heroBadge" placeholder="全国対応 ／ 出張査定無料">
-    </div>
-    <div class="field">
-      <label>タイトル 1行目</label>
-      <input type="text" data-key="heroLine1" placeholder="あなたのバイクを">
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>強調ワード（オレンジ色）</label>
-        <input type="text" data-key="heroHighlight" placeholder="最高値">
-      </div>
-      <div class="field">
-        <label>タイトル 強調後のテキスト</label>
-        <input type="text" data-key="heroLine2" placeholder="で買取します">
-      </div>
-    </div>
-    <div class="field">
-      <label>サブテキスト</label>
-      <textarea data-key="heroSub" placeholder="国産・外車・不動車・事故車、どんなバイクでもOK！"></textarea>
-    </div>
-
-    <p class="section-title">実績数値（3つのスタッツ）</p>
-    <div class="card-block">
-      <div class="card-block__label">スタッツ 1</div>
-      <div class="field-row">
-        <div class="field"><label>数値</label><input type="text" data-key="stat1Value" placeholder="15,000台"></div>
-        <div class="field"><label>ラベル</label><input type="text" data-key="stat1Label" placeholder="累計買取実績"></div>
-      </div>
-    </div>
-    <div class="card-block">
-      <div class="card-block__label">スタッツ 2</div>
-      <div class="field-row">
-        <div class="field"><label>数値</label><input type="text" data-key="stat2Value" placeholder="4.9 / 5.0"></div>
-        <div class="field"><label>ラベル</label><input type="text" data-key="stat2Label" placeholder="顧客満足度"></div>
-      </div>
-    </div>
-    <div class="card-block">
-      <div class="card-block__label">スタッツ 3</div>
-      <div class="field-row">
-        <div class="field"><label>数値</label><input type="text" data-key="stat3Value" placeholder="最短30分"></div>
-        <div class="field"><label>ラベル</label><input type="text" data-key="stat3Label" placeholder="で査定完了"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 買取実績 -->
-  <div class="panel" id="panel-price">
-    <p class="section-title">買取実績カード（6件）</p>
-    ${[1,2,3,4,5,6].map(i => `
-    <div class="card-block">
-      <div class="card-block__label">実績 ${i}</div>
-      <div class="field-row">
-        <div class="field"><label>メーカー</label><input type="text" data-key="price${i}Maker"></div>
-        <div class="field"><label>車種名</label><input type="text" data-key="price${i}Name"></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>詳細（年式・走行距離など）</label><input type="text" data-key="price${i}Detail"></div>
-        <div class="field"><label>買取金額（円）</label><input type="text" data-key="price${i}Amount"></div>
-      </div>
-    </div>`).join('')}
-  </div>
-
-  <!-- お客様の声 -->
-  <div class="panel" id="panel-review">
-    <p class="section-title">お客様の声（3件）</p>
-    ${[1,2,3].map(i => `
-    <div class="card-block">
-      <div class="card-block__label">レビュー ${i}</div>
-      <div class="field">
-        <label>レビュー文</label>
-        <textarea data-key="review${i}Text"></textarea>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>お客様名</label><input type="text" data-key="review${i}Name"></div>
-        <div class="field"><label>バイク車種</label><input type="text" data-key="review${i}Bike"></div>
-      </div>
-    </div>`).join('')}
-  </div>
-
-</div>
-
+<button class="mobile-preview-toggle" id="mobileToggle">👁️ プレビュー</button>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -293,46 +414,86 @@ const DEFAULTS = {
   stat1Value: '15,000台', stat1Label: '累計買取実績',
   stat2Value: '4.9 / 5.0', stat2Label: '顧客満足度',
   stat3Value: '最短30分', stat3Label: 'で査定完了',
-  price1Maker: 'Honda',    price1Name: 'CB400SF',       price1Detail: '2020年式 / 走行8,000km',  price1Amount: '580,000',
-  price2Maker: 'Yamaha',   price2Name: 'MT-09',          price2Detail: '2022年式 / 走行5,200km',  price2Amount: '920,000',
-  price3Maker: 'Kawasaki', price3Name: 'Z900RS',         price3Detail: '2021年式 / 走行12,000km', price3Amount: '850,000',
-  price4Maker: 'Suzuki',   price4Name: 'GSX-R1000',      price4Detail: '2019年式 / 走行18,000km', price4Amount: '750,000',
-  price5Maker: 'BMW',      price5Name: 'R1250GS',        price5Detail: '2021年式 / 走行9,500km',  price5Amount: '1,450,000',
-  price6Maker: 'Honda',    price6Name: 'スーパーカブ110', price6Detail: '2018年式 / 走行22,000km', price6Amount: '95,000',
+  price1Maker: 'Honda',    price1Name: 'CB400SF',        price1Detail: '2020年式 / 走行8,000km',  price1Amount: '580,000',
+  price2Maker: 'Yamaha',   price2Name: 'MT-09',           price2Detail: '2022年式 / 走行5,200km',  price2Amount: '920,000',
+  price3Maker: 'Kawasaki', price3Name: 'Z900RS',          price3Detail: '2021年式 / 走行12,000km', price3Amount: '850,000',
+  price4Maker: 'Suzuki',   price4Name: 'GSX-R1000',       price4Detail: '2019年式 / 走行18,000km', price4Amount: '750,000',
+  price5Maker: 'BMW',      price5Name: 'R1250GS',         price5Detail: '2021年式 / 走行9,500km',  price5Amount: '1,450,000',
+  price6Maker: 'Honda',    price6Name: 'スーパーカブ110',  price6Detail: '2018年式 / 走行22,000km', price6Amount: '95,000',
   review1Text: '「他社より10万円以上高い査定額にびっくり！スタッフの方も感じよく、安心して任せられました。」',
   review1Name: 'T.K さん（40代・男性）', review1Bike: 'Honda CBR600RR',
   review2Text: '「不動車だったので売れないと思っていましたが、快く買い取ってもらえました。引き取りも無料で助かりました！」',
   review2Name: 'M.S さん（30代・女性）', review2Bike: 'Yamaha YZF-R3（不動車）',
   review3Text: '「当日に査定・現金受け取りまで完了。書類手続きも全部やってくれて、本当に楽でした。またお願いしたいです。」',
   review3Name: 'R.Y さん（50代・男性）', review3Bike: 'Kawasaki Ninja H2',
+  colorPrimary: '#e63000',
+  colorAccent: '#ff9900',
+  heroBg: 'dark',
+  colorTheme: 'red',
 };
+
+const THEMES = {
+  red:    { colorPrimary: '#e63000', colorAccent: '#ff9900' },
+  blue:   { colorPrimary: '#1a6fe6', colorAccent: '#38bdf8' },
+  green:  { colorPrimary: '#0d7a4e', colorAccent: '#34d399' },
+  purple: { colorPrimary: '#6b21e6', colorAccent: '#c084fc' },
+};
+
+const HERO_BG = {
+  dark:     'linear-gradient(135deg, #0f0f0f 0%, #2a0a00 50%, #1a1a1a 100%)',
+  navy:     'linear-gradient(135deg, #0a0f2a 0%, #0d1f5c 50%, #0a1a40 100%)',
+  forest:   'linear-gradient(135deg, #071a0e 0%, #0d3320 50%, #0a1a10 100%)',
+  midnight: 'linear-gradient(135deg, #050510 0%, #1a0a3a 50%, #100520 100%)',
+};
+
+const channel = new BroadcastChannel('bikeConfig');
 
 function loadConfig() {
   try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem('bikeConfig') || '{}') }; }
   catch { return { ...DEFAULTS }; }
 }
 
-function fillForm(config) {
-  document.querySelectorAll('[data-key]').forEach(el => {
-    const key = el.dataset.key;
-    if (config[key] !== undefined) el.value = config[key];
-    else if (DEFAULTS[key] !== undefined) el.placeholder = DEFAULTS[key];
-  });
-}
-
 function readForm() {
   const data = {};
   document.querySelectorAll('[data-key]').forEach(el => {
-    if (el.value.trim()) data[el.dataset.key] = el.value.trim();
+    const v = el.value.trim();
+    if (v) data[el.dataset.key] = v;
   });
   return data;
+}
+
+function fillForm(cfg) {
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.dataset.key;
+    if (cfg[key] !== undefined) {
+      el.value = cfg[key];
+      if (el.type === 'color') {
+        if (key === 'colorPrimary') document.getElementById('previewPrimary').style.background = cfg[key];
+        if (key === 'colorAccent') document.getElementById('previewAccent').style.background = cfg[key];
+      }
+    }
+  });
+  // sync theme preset selection
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.theme === (cfg.colorTheme || 'red'));
+  });
+  // sync bg selection
+  document.querySelectorAll('.layout-opt').forEach(o => {
+    o.classList.toggle('selected', o.dataset.bg === (cfg.heroBg || 'dark'));
+  });
+}
+
+function broadcast() {
+  const cfg = { ...DEFAULTS, ...readForm() };
+  localStorage.setItem('bikeConfig', JSON.stringify(cfg));
+  channel.postMessage({ type: 'update', config: cfg });
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  setTimeout(() => t.classList.remove('show'), 2000);
 }
 
 // タブ切り替え
@@ -345,10 +506,50 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
+// リアルタイム更新
+document.querySelectorAll('[data-key]').forEach(el => {
+  el.addEventListener('input', () => {
+    if (el.type === 'color') {
+      if (el.dataset.key === 'colorPrimary') document.getElementById('previewPrimary').style.background = el.value;
+      if (el.dataset.key === 'colorAccent')  document.getElementById('previewAccent').style.background = el.value;
+      // clear theme preset selection on custom color
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('selected'));
+    }
+    broadcast();
+  });
+});
+
+// テーマプリセット
+document.querySelectorAll('.theme-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const theme = THEMES[btn.dataset.theme];
+    document.querySelector('[data-key="colorPrimary"]').value = theme.colorPrimary;
+    document.querySelector('[data-key="colorAccent"]').value = theme.colorAccent;
+    document.getElementById('previewPrimary').style.background = theme.colorPrimary;
+    document.getElementById('previewAccent').style.background = theme.colorAccent;
+    // store theme name in a hidden input
+    const hidden = document.getElementById('hiddenTheme');
+    if (hidden) hidden.value = btn.dataset.theme;
+    broadcast();
+  });
+});
+
+// ヒーロー背景
+document.querySelectorAll('.layout-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.layout-opt').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    const hidden = document.getElementById('hiddenHeroBg');
+    if (hidden) hidden.value = opt.dataset.bg;
+    broadcast();
+  });
+});
+
 // 保存
 document.getElementById('saveBtn').addEventListener('click', () => {
-  const data = readForm();
-  localStorage.setItem('bikeConfig', JSON.stringify(data));
+  broadcast();
   showToast('✅ 保存しました！');
 });
 
@@ -357,10 +558,29 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   if (!confirm('すべてデフォルトに戻しますか？')) return;
   localStorage.removeItem('bikeConfig');
   fillForm(DEFAULTS);
+  broadcast();
   showToast('🔄 リセットしました');
 });
 
-fillForm(loadConfig());
+// モバイルプレビュートグル
+document.getElementById('mobileToggle').addEventListener('click', () => {
+  const pane = document.getElementById('previewPane');
+  const isShowing = pane.classList.toggle('show-mobile');
+  document.getElementById('mobileToggle').textContent = isShowing ? '✏️ 編集に戻る' : '👁️ プレビュー';
+});
+
+// 初期化
+const cfg = loadConfig();
+fillForm(cfg);
+
+// iframeロード後に初期configを送信
+document.getElementById('previewFrame').addEventListener('load', () => {
+  setTimeout(broadcast, 100);
+});
 </script>
+
+<!-- 隠し入力（テーマ・背景） -->
+<input type="hidden" id="hiddenTheme" data-key="colorTheme" value="red">
+<input type="hidden" id="hiddenHeroBg" data-key="heroBg" value="dark">
 </body>
 </html>
